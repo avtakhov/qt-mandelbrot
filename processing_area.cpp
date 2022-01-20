@@ -8,21 +8,6 @@
 
 namespace mandelbrot {
 
-namespace {
-
-struct CalculateFunction : QObject {
-  std::shared_ptr<ProcessingArea> area;
-
-  void operator()(QPointF pt, double scale,
-                  std::atomic<bool> const& cancel_flag) {
-    auto result =
-        core::calculate(pt, area->position().size(), scale, cancel_flag);
-    area->position().size();
-  }
-};
-
-}  // namespace
-
 ProcessingArea::ProcessingArea(QPointF base_p0, QRect area, double scale,
                                QThreadPool* threads, QObject* parent)
     : QObject(parent),
@@ -45,17 +30,18 @@ QRect ProcessingArea::position() const {
   return QRect(current_position_, area_size_);
 }
 
-void ProcessingArea::cancel() { cancel_flag_.store(true); }
+void ProcessingArea::cancel() {
+  cancel_flag_.store(true);
+  processed_area_.waitForFinished();
+}
 
 void ProcessingArea::start() {
-  processed_area_ =
-      QtConcurrent::run(threads_, [area = shared_from_this()]() -> QImage {
-        auto result =
-            core::calculate(area->from_point_, area->position().size(),
-                            area->scale_, area->cancel_flag_);
-        emit area->processFinished();
-        return result;
-      });
+  processed_area_ = QtConcurrent::run(threads_, [this]() {
+    auto result =
+        core::calculate(from_point_, position().size(), scale_, cancel_flag_);
+    emit processFinished();
+    return result;
+  });
 }
 
 }  // namespace mandelbrot

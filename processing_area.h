@@ -8,7 +8,7 @@
 namespace mandelbrot {
 
 class ProcessingArea : public QObject,
-                       std::enable_shared_from_this<ProcessingArea> {
+                       public std::enable_shared_from_this<ProcessingArea> {
   Q_OBJECT
  public:
   ProcessingArea(QPointF base_p0, QRect position, double scale,

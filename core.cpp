@@ -22,7 +22,7 @@ qreal toReal(qreal from, int value, double scale) {
   return from + value / scale;
 }
 
-const std::uint32_t kMaxIterations = 500;
+const std::uint32_t kMaxIterations = 1000;
 
 std::uint32_t iterations(qreal x0, qreal y0) {
   if (at(x0, y0)) return kMaxIterations;
@@ -37,8 +37,6 @@ std::uint32_t iterations(qreal x0, qreal y0) {
   return iter;
 }
 
-struct Cancel {};
-
 }  // namespace
 
 QImage calculate(QPointF from, QSize size, double scale,
@@ -47,7 +45,7 @@ QImage calculate(QPointF from, QSize size, double scale,
   for (auto i = 0; i < size.width(); ++i) {
     for (auto j = 0; j < size.height(); ++j) {
       if (cancel_flag.load()) {
-        throw Cancel{};
+        return result;
       }
       auto const realX = toReal(from.x(), i, scale);
       auto const realY = toReal(from.y(), j, scale);

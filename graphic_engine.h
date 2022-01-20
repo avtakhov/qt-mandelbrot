@@ -31,7 +31,7 @@ class GraphicEngine : public QWidget {
   void filterAreas(std::function<bool(QRect)>);
 
   std::size_t nCells;
-  std::list<std::shared_ptr<ProcessingArea>> processed_areas_;
+  std::list<ProcessingArea *> processed_areas_;
   QPointF base = QPoint(-5, -5);
   double scale = 50;
   QPointF lastDragPos;

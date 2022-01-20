@@ -160,9 +160,8 @@ void GraphicEngine::resizeEvent(QResizeEvent* event) {
 }
 
 void GraphicEngine::process(QRect area) {
-  std::shared_ptr<ProcessingArea> processing_area =
-      std::make_shared<ProcessingArea>(base, area, scale, threads_, this);
-  connect(processing_area.get(), &ProcessingArea::processFinished, this,
+  auto* processing_area = new ProcessingArea(base, area, scale, threads_, this);
+  connect(processing_area, &ProcessingArea::processFinished,
           [this]() { update(); });
   processing_area->start();
   processed_areas_.emplace_back(std::move(processing_area));
@@ -174,6 +173,7 @@ void GraphicEngine::filterAreas(std::function<bool(QRect)> f) {
       ++it;
     } else {
       (*it)->cancel();
+      delete *it;
       it = processed_areas_.erase(it);
     }
   }
