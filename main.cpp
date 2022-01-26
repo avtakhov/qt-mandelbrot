@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
-  mandelbrot::GraphicEngine w(25, nullptr);
+  mandelbrot::GraphicEngine w(10, nullptr);
   w.show();
   return a.exec();
 }

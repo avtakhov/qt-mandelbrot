@@ -19,9 +19,8 @@ ProcessingArea::ProcessingArea(QPointF base_p0, QRect area, double scale,
       cancel_flag_(false) {}
 
 void ProcessingArea::draw(QPainter& painter, QImage const& blur) const {
-  painter.drawImage(current_position_, processed_area_.isFinished()
-                                           ? processed_area_.result()
-                                           : blur);
+  painter.drawImage(current_position_,
+                    isFinished() ? processed_area_.result() : blur);
 }
 
 void ProcessingArea::translate(QPoint offset) { current_position_ += offset; }
@@ -42,6 +41,13 @@ void ProcessingArea::start() {
     emit processFinished();
     return result;
   });
+}
+
+bool ProcessingArea::isFinished() const { return processed_area_.isFinished(); }
+
+ProcessingArea::~ProcessingArea() {
+  cancel();
+  processed_area_.waitForFinished();
 }
 
 }  // namespace mandelbrot

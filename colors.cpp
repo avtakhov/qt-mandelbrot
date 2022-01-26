@@ -16,10 +16,6 @@ struct GreenNeon {
   }
 
   static std::uint8_t Blue(std::uint32_t iterations) { return iterations; }
-
-  static std::string description() {
-    return "Зеленая лампочка освещает бесконечную темноту";
-  }
 };
 
 struct NoGreen {
@@ -28,8 +24,6 @@ struct NoGreen {
   static std::uint8_t Green(std::uint32_t iterations) { return 0; }
 
   static std::uint8_t Blue(std::uint32_t iterations) { return iterations; }
-
-  static std::string description() { return "Не люблю зеленый"; }
 };
 
 struct Dawn {
@@ -40,8 +34,6 @@ struct Dawn {
   static std::uint8_t Green(std::uint32_t iterations) { return iterations; }
 
   static std::uint8_t Blue(std::uint32_t iterations) { return iterations; }
-
-  static std::string description() { return "Тоже норм"; }
 };
 
 template <typename ColorGenerator>
@@ -54,7 +46,7 @@ QColor GetColorImpl(std::uint32_t iterations) {
 }  // namespace
 
 QColor GetColor(std::uint32_t iterations) {
-  return GetColorImpl<Dawn>(iterations);
+  return GetColorImpl<NoGreen>(iterations);
 }
 
 }  // namespace mandelbrot

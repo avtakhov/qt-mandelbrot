@@ -22,7 +22,7 @@ qreal toReal(qreal from, int value, double scale) {
   return from + value / scale;
 }
 
-const std::uint32_t kMaxIterations = 1000;
+const std::uint32_t kMaxIterations = 5 * 100;
 
 std::uint32_t iterations(qreal x0, qreal y0) {
   if (at(x0, y0)) return kMaxIterations;
@@ -41,7 +41,7 @@ std::uint32_t iterations(qreal x0, qreal y0) {
 
 QImage calculate(QPointF from, QSize size, double scale,
                  std::atomic<bool> const& cancel_flag) {
-  QImage result = QImage(size, QImage::Format::Format_RGB16);
+  QImage result = QImage(size, QImage::Format::Format_RGB32);
   for (auto i = 0; i < size.width(); ++i) {
     for (auto j = 0; j < size.height(); ++j) {
       if (cancel_flag.load()) {
